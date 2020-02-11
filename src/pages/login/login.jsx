@@ -6,6 +6,18 @@ import './login.less';
 const { Item } = Form;
 
 class Login extends Component {
+  // { required: true, message: '您的密码不能为空！' },
+  // { max: 16, message: '密码不能超过16个字符！' },
+  // { min: 6, message: '密码不能小于6个字符！' }
+  passwordValidator = (rule, value, callback) => {
+    console.log(rule, value, callback);
+    if (!value) callback('请输入您的密码！');
+    else if (value.length > 16) callback('密码长度不能超过16位！');
+    else if (value.length < 6) callback('密码长度不能小于6位！');
+    // else if (!/^\w+$/.test(value)) callback('密码只能由字母数字下划线组成！');
+    else callback();
+  };
+
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
@@ -34,11 +46,7 @@ class Login extends Component {
             </Item>
             <Item>
               {getFieldDecorator('password', {
-                rules: [
-                  { required: true, message: '您的密码不能为空！' },
-                  { max: 16, message: '密码不能超过16个字符！' },
-                  { min: 6, message: '密码不能小于6个字符！' }
-                ]
+                rules: [{ validator: this.passwordValidator }]
               })(
                 <Input
                   prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
