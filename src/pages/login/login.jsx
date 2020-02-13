@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Icon, Input, Button } from 'antd';
+import axios from 'axios';
 
 import Logo from './images/logo.png';
 import './login.less';
@@ -12,10 +13,28 @@ class Login extends Component {
   passwordValidator = (rule, value, callback) => {
     console.log(rule, value, callback);
     if (!value) callback('请输入您的密码！');
-    else if (value.length > 16) callback('密码长度不能超过16位！');
-    else if (value.length < 6) callback('密码长度不能小于6位！');
+    else if (value.length > 12) callback('密码长度不能超过12位！');
+    else if (value.length < 4) callback('密码长度不能小于4位！');
     // else if (!/^\w+$/.test(value)) callback('密码只能由字母数字下划线组成！');
     else callback();
+  };
+
+  handleSubmit = e => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        const { username, password } = values;
+        // console.log('用户名，密码是', values);
+        axios.post('http://localhost:3000/login', `username=${username}&password=${password}`).then(
+          response => {
+            console.log(response.data);
+          },
+          error => {
+            console.log(error);
+          }
+        );
+      }
+    });
   };
 
   render() {
