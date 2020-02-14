@@ -1,17 +1,20 @@
 import React, { Component } from 'react';
-import { Form, Icon, Input, Button } from 'antd';
-import axios from 'axios';
+import { Form, Icon, Input, Button, message } from 'antd';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
+import { createSaveUserInfoAction } from '../../redux/action_creators/login';
+import { reqLogin } from '../../api';
 import Logo from './images/logo.png';
-import './login.less';
+import './css/login.less';
 const { Item } = Form;
 
 class Login extends Component {
-  // { required: true, message: '您的密码不能为空！' },
-  // { max: 16, message: '密码不能超过16个字符！' },
-  // { min: 6, message: '密码不能小于6个字符！' }
   passwordValidator = (rule, value, callback) => {
-    console.log(rule, value, callback);
+    // { required: true, message: '您的密码不能为空！' },
+    // { max: 16, message: '密码不能超过16个字符！' },
+    // { min: 6, message: '密码不能小于6个字符！' }
+    // console.log(callback);
     if (!value) callback('请输入您的密码！');
     else if (value.length > 12) callback('密码长度不能超过12位！');
     else if (value.length < 4) callback('密码长度不能小于4位！');
@@ -21,23 +24,31 @@ class Login extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    this.props.form.validateFields((err, values) => {
+    this.props.form.validateFields(async (err, values) => {
       if (!err) {
-        const { username, password } = values;
+        // const { username, password } = values;
         // console.log('用户名，密码是', values);
-        axios.post('http://localhost:3000/login', `username=${username}&password=${password}`).then(
-          response => {
-            console.log(response.data);
-          },
-          error => {
-            console.log(error);
-          }
-        );
+        // myAxios.post('/login', values).then(
+        //   response => {
+        //     console.log(response);
+        //     message.success('登陆成功');
+        //   }
+        // );
+        const result = await reqLogin(values);
+        // console.log(result);
+        const { status, data, msg } = result;
+        if (!status) {
+          message.success('登录成功');
+          this.props.saveUserInfo(data);
+          this.props.history.replace('/admin');
+        } else message.warning(msg);
       }
     });
   };
 
   render() {
+    const { isLogin } = this.props.userInfo;
+    if (isLogin) return <Redirect to="/admin" />;
     const { getFieldDecorator } = this.props.form;
     return (
       <div id="login">
@@ -76,7 +87,7 @@ class Login extends Component {
             </Item>
             <Item>
               <Button type="primary" htmlType="submit" className="login-form-button">
-                Log in
+                登录
               </Button>
             </Item>
           </Form>
@@ -85,4 +96,6 @@ class Login extends Component {
     );
   }
 }
-export default Form.create()(Login);
+export default connect(state => ({ userInfo: state.userInfo }), {
+  saveUserInfo: createSaveUserInfoAction
+})(Form.create()(Login));

@@ -1,18 +1,28 @@
 import React, { Component } from 'react';
-import { Menu, Icon } from 'antd';
-import './admin.less';
+import { Menu, Icon, Button } from 'antd';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
+import './css/admin.less';
 import Logo from './images/logo.png';
+import { createDeleteUserInfoAction } from '../../redux/action_creators/login';
 
 const { SubMenu } = Menu;
 const { Item } = Menu;
 
-export default class Admin extends Component {
-  state = {
-    collapsed: false
+class Admin extends Component {
+  handleDeleteUserInfo = () => {
+    this.props.deleteUserInfo();
   };
+
   render() {
+    const { isLogin } = this.props.userInfo;
+    if (!isLogin) return <Redirect to="/login" />;
     return (
       <div id="admin">
+        <div className="welcome">欢迎登录：{this.props.userInfo.user.username}</div>
+        <Button type="primary" className="logout" onClick={this.handleDeleteUserInfo}>
+          退出登录
+        </Button>
         <div className="ant-layout-sider-children">
           <div>
             <div className="nav-header">
@@ -24,7 +34,8 @@ export default class Admin extends Component {
               defaultOpenKeys={['sub1']}
               mode="inline"
               theme="dark"
-              inlineCollapsed={this.state.collapsed}>
+              // inlineCollapsed={this.state.collapsed}
+            >
               <Item>
                 <Icon type="home" />
                 <span>首页</span>
@@ -80,3 +91,7 @@ export default class Admin extends Component {
     );
   }
 }
+
+export default connect(state => ({ userInfo: state.userInfo }), {
+  deleteUserInfo: createDeleteUserInfoAction
+})(Admin);
