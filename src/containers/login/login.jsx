@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
 import { Form, Icon, Input, Button, message } from 'antd';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+// import { Redirect } from 'react-router-dom';
 
 import { createSaveUserInfoAction } from '../../redux/action_creators/login';
 import { reqLogin } from '../../api';
+import check from '../check/check';
 import Logo from './images/logo.png';
 import './css/login.less';
-const { Item } = Form;
+const { Item, create } = Form;
 
+@connect(state => ({ userInfo: state.userInfo }), { saveUserInfo: createSaveUserInfoAction })
+@create()
+@check
 class Login extends Component {
   passwordValidator = (rule, value, callback) => {
     // { required: true, message: '您的密码不能为空！' },
@@ -47,8 +51,8 @@ class Login extends Component {
   };
 
   render() {
-    const { isLogin } = this.props.userInfo;
-    if (isLogin) return <Redirect to="/admin" />;
+    // const { isLogin } = this.props.userInfo;
+    // if (isLogin) return <Redirect to="/admin" />;
     const { getFieldDecorator } = this.props.form;
     return (
       <div id="login">
@@ -96,6 +100,5 @@ class Login extends Component {
     );
   }
 }
-export default connect(state => ({ userInfo: state.userInfo }), {
-  saveUserInfo: createSaveUserInfoAction
-})(Form.create()(Login));
+
+export default Login;

@@ -1,52 +1,87 @@
-<div style={{ width: 256 }}>
-  <Button type="primary" onClick={this.toggleCollapsed} style={{ marginBottom: 16 }}>
-    <Icon type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'} />
+import { connect } from 'react-redux';
+import { createDeleteUserInfoAction } from '../../redux/action_creators/login';
+@connect(state => ({ userInfo: state.userInfo }), { deleteUserInfo: createDeleteUserInfoAction })
+
+import { Menu, Icon, Button } from 'antd';
+const { SubMenu } = Menu;
+const { Item } = Menu;
+
+
+
+import './css/admin.less';
+import Logo from './images/logo.png';
+
+handleDeleteUserInfo = () => {
+  this.props.deleteUserInfo();
+};
+
+<div id="admin">
+  <div className="welcome">欢迎登录：{this.props.userInfo.user.username}</div>
+  <Button type="primary" className="logout" onClick={this.handleDeleteUserInfo}>
+    退出登录
   </Button>
-  <Menu
-    defaultSelectedKeys={['1']}
-    defaultOpenKeys={['sub1']}
-    mode="inline"
-    theme="dark"
-    inlineCollapsed={this.state.collapsed}>
-    <Menu.Item key="1">
-      <Icon type="pie-chart" />
-      <span>Option 1</span>
-    </Menu.Item>
-    <Menu.Item key="2">
-      <Icon type="desktop" />
-      <span>Option 2</span>
-    </Menu.Item>
-    <Menu.Item key="3">
-      <Icon type="inbox" />
-      <span>Option 3</span>
-    </Menu.Item>
-    <SubMenu
-      key="sub1"
-      title={
-        <span>
-          <Icon type="mail" />
-          <span>Navigation One</span>
-        </span>
-      }>
-      <Menu.Item key="5">Option 5</Menu.Item>
-      <Menu.Item key="6">Option 6</Menu.Item>
-      <Menu.Item key="7">Option 7</Menu.Item>
-      <Menu.Item key="8">Option 8</Menu.Item>
-    </SubMenu>
-    <SubMenu
-      key="sub2"
-      title={
-        <span>
-          <Icon type="appstore" />
-          <span>Navigation Two</span>
-        </span>
-      }>
-      <Menu.Item key="9">Option 9</Menu.Item>
-      <Menu.Item key="10">Option 10</Menu.Item>
-      <SubMenu key="sub3" title="Submenu">
-        <Menu.Item key="11">Option 11</Menu.Item>
-        <Menu.Item key="12">Option 12</Menu.Item>
-      </SubMenu>
-    </SubMenu>
-  </Menu>
+  <div className="ant-layout-sider-children">
+    <div>
+      <div className="nav-header">
+        <img src={Logo} alt="logo" />
+        <h1>商品管理系统</h1>
+      </div>
+      <Menu
+        defaultSelectedKeys={['1']}
+        defaultOpenKeys={['sub1']}
+        mode="inline"
+        theme="dark"
+        // inlineCollapsed={this.state.collapsed}
+      >
+        <Item>
+          <Icon type="home" />
+          <span>首页</span>
+        </Item>
+        <SubMenu
+          title={
+            <span>
+              <Icon type="appstore" />
+              <span>商品</span>
+            </span>
+          }>
+          <Item>
+            <Icon type="unordered-list" />
+            <span>分类管理</span>
+          </Item>
+          <Item>
+            <Icon type="tool" />
+            <span>商品管理</span>
+          </Item>
+        </SubMenu>
+        <Item>
+          <Icon type="user" />
+          <span>用户管理</span>
+        </Item>
+        <Item>
+          <Icon type="safety-certificate" />
+          <span>角色管理</span>
+        </Item>
+        <SubMenu
+          title={
+            <span>
+              <Icon type="area-chart" />
+              <span>图形图表</span>
+            </span>
+          }>
+          <Item>
+            <Icon type="bar-chart" />
+            <span>柱形图</span>
+          </Item>
+          <Item>
+            <Icon type="line-chart" />
+            <span>折线图</span>
+          </Item>
+          <Item>
+            <Icon type="pie-chart" />
+            <span>饼图</span>
+          </Item>
+        </SubMenu>
+      </Menu>
+    </div>
+  </div>
 </div>;
