@@ -8,20 +8,12 @@ const { Item } = Menu;
 
 
 
-import './css/admin.less';
-import Logo from './images/logo.png';
+
 
 handleDeleteUserInfo = () => {
   this.props.deleteUserInfo();
 };
 
-<div id="admin">
-  <div className="welcome">欢迎登录：{this.props.userInfo.user.username}</div>
-  <Button type="primary" className="logout" onClick={this.handleDeleteUserInfo}>
-    退出登录
-  </Button>
-  <div className="ant-layout-sider-children">
-    <div>
       <div className="nav-header">
         <img src={Logo} alt="logo" />
         <h1>商品管理系统</h1>
@@ -82,6 +74,3 @@ handleDeleteUserInfo = () => {
           </Item>
         </SubMenu>
       </Menu>
-    </div>
-  </div>
-</div>;
