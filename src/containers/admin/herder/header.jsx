@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button, Icon } from 'antd';
+import { Button, Icon, Modal } from 'antd';
 import screenfull from 'screenfull';
 import dayjs from 'dayjs';
 
@@ -8,6 +8,8 @@ import { createDeleteUserInfoAction } from '../../../redux/action_creators/login
 import { reqWeatherData } from '../../../api';
 
 import './css/header.less';
+
+const { confirm } = Modal;
 
 @connect(state => ({ userInfo: state.userInfo }), { deleteUserInfo: createDeleteUserInfoAction })
 class Header extends Component {
@@ -18,7 +20,15 @@ class Header extends Component {
   };
 
   handleDeleteUserInfo = () => {
-    this.props.deleteUserInfo();
+    confirm({
+      title: '您确定要退出登录吗？',
+      content: '您退出登录下次需要再次登录！',
+      okText: '确定',
+      cancelText: '取消',
+      onOk: () => {
+        this.props.deleteUserInfo();
+      }
+    });
   };
 
   handleFullScreen = () => {
@@ -28,7 +38,7 @@ class Header extends Component {
   handleGetWeatherData = async () => {
     let weatherData = await reqWeatherData('北京');
     this.setState({ weatherData });
-    console.log(this.state);
+    // console.log(this.state);
   };
 
   componentDidMount() {
@@ -44,6 +54,10 @@ class Header extends Component {
     }, 1000);
 
     this.handleGetWeatherData();
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.dateId);
   }
 
   render() {
